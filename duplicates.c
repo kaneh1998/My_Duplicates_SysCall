@@ -8,6 +8,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "duplicates.h"
+
 int main(int argc, char *argv[]) {
 
     printf("Line 1\n");
