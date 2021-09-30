@@ -1,4 +1,5 @@
-# A Makefile to build our project
+# A Makefile to build the project
+# run with make -f Makefile
 
 PROJECT = duplicates
 HEADERS = $(PROJECT).h
