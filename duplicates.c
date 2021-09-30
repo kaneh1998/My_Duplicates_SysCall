@@ -13,7 +13,19 @@
 int main(int argc, char *argv[]) {
 
     printf("Line 1\n");
-    //printf("Line 2\n");
+    printf("Line 2\n");
+    //printf("Line 3\n");
+
+    //char *ptr = "hello";
+
+    //char *p = strSHA2(ptr);
+
+    //char *p = strSHA2(ptr);
+
+    //printf("%s\n", p);
+
+
+    //printf("%s\n", *p);
 
     exit(0);
 }

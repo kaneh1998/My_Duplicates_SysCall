@@ -3,3 +3,9 @@
 #include <stdbool.h>
 
 #include "duplicates.h"
+
+int let() {
+
+    return 6;
+    
+}
