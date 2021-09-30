@@ -1,4 +1,4 @@
-# project2
+# Project 2 | CITS2002 | Duplicate Files in C
 
 Created for project 2 of CITS2002 Systems Programming at UWA.
 
