@@ -13,6 +13,7 @@
 int main(int argc, char *argv[]) {
 
     printf("Line 1\n");
+    //printf("Line 2\n");
 
     exit(0);
 }
