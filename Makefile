@@ -1,7 +1,5 @@
 # A Makefile to build the project
 # run with make -f Makefile
-# Changing from -c to -pedantic fucks it up atm
-# Changing from -o to -pedantic fucks it up too
 
 PROJECT = duplicates
 HEADERS = $(PROJECT).h
@@ -11,7 +9,7 @@ C11 = cc -std=c11
 CFLAGS = -Wall -Werror
 
 $(PROJECT) : $(OBJ)
-	$(C11) $(CFLAGS) -o $(PROJECT) $(OBJ)
+	$(C11) $(CFLAGS) -pedantic -o $(PROJECT) $(OBJ)
 	
 %.o : %.c $(HEADERS)
 	$(C11) $(CFLAGS) -c $<

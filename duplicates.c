@@ -14,18 +14,15 @@ int main(int argc, char *argv[]) {
 
     printf("Line 1\n");
     printf("Line 2\n");
-    //printf("Line 3\n");
-
-    //char *ptr = "hello";
+    printf("Line 3\n");
 
     //char *p = strSHA2(ptr);
 
-    //char *p = strSHA2(ptr);
 
-    //printf("%s\n", p);
+    int g = get();
 
+    printf("%i\n", g);
 
-    //printf("%s\n", *p);
 
     exit(0);
 }

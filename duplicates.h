@@ -3,6 +3,8 @@
 
 extern	char *strSHA2(char *);
 
+extern int get();
+
 // DECLARE GLOBAL PREPROCESSOR CONSTANTS
 
 // #define MAX      200
