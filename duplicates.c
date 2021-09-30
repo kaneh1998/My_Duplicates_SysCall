@@ -10,13 +10,17 @@
 
 #include "duplicates.h"
 
+
+
 int main(int argc, char *argv[]) {
+
+
+
+
 
     printf("Line 1\n");
     printf("Line 2\n");
     printf("Line 3\n");
-
-    //char *p = strSHA2(ptr);
 
 
     int g = get();
