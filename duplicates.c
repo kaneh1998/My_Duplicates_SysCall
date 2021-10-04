@@ -22,6 +22,9 @@ void getStats(char dirName[]) {
     //time_t curtime;
     //struct tm *tm;
 
+    int i = 0;
+    char *hashVals[500];
+
     DIR *dp;
     struct dirent *dirp;
     int ret2;
@@ -29,8 +32,7 @@ void getStats(char dirName[]) {
     dp = opendir(dirName);
 
     ret2 = chdir(dirName);
-
-    if (ret2 == -1) {
+    if (ret2 != 0) {
         perror("Unable to change directory\n");
         exit(EXIT_FAILURE);
     }
@@ -47,7 +49,13 @@ void getStats(char dirName[]) {
 
         //tm = localtime(&buffer.st_mtime);
 
-        //printf("size: %ld ", buffer.st_size);
+        printf("size: %ld ", buffer.st_size);
+
+        hashVals[i] = strSHA2(dirp->d_name);
+
+        printf("HASH: %s\n", hashVals[i]);
+
+        i++;
 
         //char datestring[256];
 
