@@ -17,10 +17,24 @@
 #include "duplicates.h"
 
 
-void getStats(char dirName[]) {
+void checkHash(char *hashValues[]) {
 
-    //time_t curtime;
-    //struct tm *tm;
+    for (int i = 0; i < 21; i++) {
+        for (int j = 0; j < 21; j++) {
+            if (strcmp(hashValues[i], hashValues[j]) == 0) {
+                if (i == j) {
+                    continue;
+                } else {
+                    printf("CHECKING .. %s   VS   %s\n", hashValues[i], hashValues[j]);
+                    printf("CHECKING .. %i   VS   %i\n", i, j);
+                    printf("Duplicate file found\n");
+                }
+            }
+        }
+    }
+}
+
+void getStats(char dirName[]) {
 
     int i = 0;
     char *hashVals[500];
@@ -66,6 +80,8 @@ void getStats(char dirName[]) {
     }
 
     closedir(dp);
+
+    checkHash(hashVals);
 
 }
 
