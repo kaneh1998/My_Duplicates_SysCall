@@ -6,27 +6,68 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <unistd.h>
+#include <ctype.h>
+#include <dirent.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <time.h>
 
 #include "duplicates.h"
 
 
+void getStats(char dirName[]) {
+
+    //time_t curtime;
+    //struct tm *tm;
+
+    DIR *dp;
+    struct dirent *dirp;
+    int ret2;
+
+    dp = opendir(dirName);
+
+    ret2 = chdir(dirName);
+
+    if (ret2 == -1) {
+        perror("Unable to change directory\n");
+        exit(EXIT_FAILURE);
+    }
+
+    while ((dirp = readdir(dp)) != NULL) {
+
+        struct stat buffer;
+
+        int status = stat(dirp->d_name, &buffer);
+        if (status != 0) {
+            printf("ERROR\n");
+            exit(EXIT_FAILURE);
+        }
+
+        //tm = localtime(&buffer.st_mtime);
+
+        //printf("size: %ld ", buffer.st_size);
+
+        //char datestring[256];
+
+        //strftime(datestring, sizeof(datestring), NULL, tm);
+
+        printf(" \t%s\n", dirp->d_name);
+
+    }
+
+    closedir(dp);
+
+}
 
 int main(int argc, char *argv[]) {
 
+    char dirName[2000];
 
+    strcpy(dirName, argv[1]);
 
+    getStats(dirName);
 
-
-    printf("Line 1\n");
-    printf("Line 2\n");
-    printf("Line 3\n");
-
-
-    int g = get();
-
-    printf("%i\n", g);
-
-
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
