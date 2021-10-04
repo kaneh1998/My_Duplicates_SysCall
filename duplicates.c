@@ -16,28 +16,45 @@
 
 #include "duplicates.h"
 
+typedef struct {
 
-void checkHash(char *hashValues[]) {
+    char *hashString[5000];
+    char *fileName[5000];
+
+} HASH_LIST;
+
+
+int checkHash(HASH_LIST hash) {
+    int duplicates = 0;
 
     for (int i = 0; i < 21; i++) {
         for (int j = 0; j < 21; j++) {
-            if (strcmp(hashValues[i], hashValues[j]) == 0) {
+            //printf("CHECKING .. %s   VS   %s\n", hash.hashString[i], hash.hashString[j]);
+            //printf("CHECKING .. %i   VS   %i\n", i, j);
+            if (strcmp(hash.hashString[i], hash.hashString[j]) == 0) {
                 if (i == j) {
                     continue;
                 } else {
-                    printf("CHECKING .. %s   VS   %s\n", hashValues[i], hashValues[j]);
-                    printf("CHECKING .. %i   VS   %i\n", i, j);
                     printf("Duplicate file found\n");
+                    printf("NAME 1: %s  VS NAME2: %s\n", hash.fileName[i], hash.fileName[j]);
+                    duplicates++;
                 }
             }
         }
     }
+
+    return duplicates;
 }
 
 void getStats(char dirName[]) {
 
+    int numberOfFiles = 0;
+    int *numFiles = &numberOfFiles;
+    int totalBytes = 0;
+
+    HASH_LIST hash;
+
     int i = 0;
-    char *hashVals[500];
 
     DIR *dp;
     struct dirent *dirp;
@@ -60,14 +77,19 @@ void getStats(char dirName[]) {
             printf("ERROR\n");
             exit(EXIT_FAILURE);
         }
+        numberOfFiles++;
 
         //tm = localtime(&buffer.st_mtime);
 
         printf("size: %ld ", buffer.st_size);
+        totalBytes += buffer.st_size;
 
-        hashVals[i] = strSHA2(dirp->d_name);
 
-        printf("HASH: %s\n", hashVals[i]);
+        hash.hashString[i] = strSHA2(dirp->d_name);
+        hash.fileName[i] = dirp->d_name;
+
+        printf("HASH: %s\n", hash.hashString[i]);
+        printf("NAME FILE: %s\n", hash.fileName[i]);
 
         i++;
 
@@ -81,7 +103,13 @@ void getStats(char dirName[]) {
 
     closedir(dp);
 
-    checkHash(hashVals);
+    int dups = checkHash(hash);
+    int duplicateSize = 500;
+
+    printf("Number of files: %i\n", *numFiles);
+    printf("Total Bytes: %i\n", totalBytes);
+    printf("Total unique files: %i\n", *numFiles - dups);
+    printf("Minimum total size: %i\n", totalBytes - duplicateSize);
 
 }
 
