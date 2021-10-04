@@ -18,8 +18,9 @@
 
 typedef struct {
 
-    char *hashString[5000];
+    char *hashString[5000]; // Need to dynamically allocate memory here
     char *fileName[5000];
+    int fileSize[5000];
 
 } HASH_LIST;
 
@@ -36,7 +37,8 @@ int checkHash(HASH_LIST hash) {
                     continue;
                 } else {
                     printf("Duplicate file found\n");
-                    printf("NAME 1: %s  VS NAME2: %s\n", hash.fileName[i], hash.fileName[j]);
+                    printf("NAME 1: %s  VS NAME 2: %s\n", hash.fileName[i], hash.fileName[j]);
+                    printf("SIZE 1: %d  VS SIZE 2: %d\n", hash.fileSize[i], hash.fileSize[j]);
                     duplicates++;
                 }
             }
@@ -83,6 +85,7 @@ void getStats(char dirName[]) {
 
         printf("size: %ld ", buffer.st_size);
         totalBytes += buffer.st_size;
+        hash.fileSize[i] = buffer.st_size;
 
 
         hash.hashString[i] = strSHA2(dirp->d_name);
