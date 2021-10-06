@@ -13,116 +13,80 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <sys/types.h>
+#include <getopt.h>
 
 #include "duplicates.h"
 
-typedef struct {
+#define OPTLIST "aAfhlmq:"
 
-    char *hashString[5000]; // Need to dynamically allocate memory here
-    char *fileName[5000];
-    int fileSize[5000];
-
-} HASH_LIST;
-
-
-int checkHash(HASH_LIST hash) {
-    int duplicates = 0;
-
-    for (int i = 0; i < 21; i++) {
-        for (int j = 0; j < 21; j++) {
-            //printf("CHECKING .. %s   VS   %s\n", hash.hashString[i], hash.hashString[j]);
-            //printf("CHECKING .. %i   VS   %i\n", i, j);
-            if (strcmp(hash.hashString[i], hash.hashString[j]) == 0) {
-                if (i == j) {
-                    continue;
-                } else {
-                    printf("Duplicate file found\n");
-                    printf("NAME 1: %s  VS NAME 2: %s\n", hash.fileName[i], hash.fileName[j]);
-                    printf("SIZE 1: %d  VS SIZE 2: %d\n", hash.fileSize[i], hash.fileSize[j]);
-                    duplicates++;
-                }
-            }
-        }
-    }
-
-    return duplicates;
-}
-
-void getStats(char dirName[]) {
-
-    int numberOfFiles = 0;
-    int *numFiles = &numberOfFiles;
-    int totalBytes = 0;
-
-    HASH_LIST hash;
-
-    int i = 0;
-
-    DIR *dp;
-    struct dirent *dirp;
-    int ret2;
-
-    dp = opendir(dirName);
-
-    ret2 = chdir(dirName);
-    if (ret2 != 0) {
-        perror("Unable to change directory\n");
-        exit(EXIT_FAILURE);
-    }
-
-    while ((dirp = readdir(dp)) != NULL) {
-
-        struct stat buffer;
-
-        int status = stat(dirp->d_name, &buffer);
-        if (status != 0) {
-            printf("ERROR\n");
-            exit(EXIT_FAILURE);
-        }
-        numberOfFiles++;
-
-        //tm = localtime(&buffer.st_mtime);
-
-        printf("size: %ld ", buffer.st_size);
-        totalBytes += buffer.st_size;
-        hash.fileSize[i] = buffer.st_size;
-
-
-        hash.hashString[i] = strSHA2(dirp->d_name);
-        hash.fileName[i] = dirp->d_name;
-
-        printf("HASH: %s\n", hash.hashString[i]);
-        printf("NAME FILE: %s\n", hash.fileName[i]);
-
-        i++;
-
-        //char datestring[256];
-
-        //strftime(datestring, sizeof(datestring), NULL, tm);
-
-        printf(" \t%s\n", dirp->d_name);
-
-    }
-
-    closedir(dp);
-
-    int dups = checkHash(hash);
-    int duplicateSize = 500;
-
-    printf("Number of files: %i\n", *numFiles);
-    printf("Total Bytes: %i\n", totalBytes);
-    printf("Total unique files: %i\n", *numFiles - dups);
-    printf("Minimum total size: %i\n", totalBytes - duplicateSize);
-
-}
 
 int main(int argc, char *argv[]) {
 
-    char dirName[2000];
+    char path[2000];
 
-    strcpy(dirName, argv[1]);
+    int opt;
 
-    getStats(dirName);
+    /*
+     * Sorts through optional flags
+     * to determine what to output
+     */
+    while ((opt = getopt(argc, argv, OPTLIST)) != -1) {
+        switch (opt) {
+            case 'a':
+                printf("Consider all hidden & default '.' files in count \n");
+                break;
+            case 'A':
+                printf("Advanced option \n");
+                break;
+            case 'f':
+                printf("Check if file has duplicates\n");
+                printf("Lists relative pathnames of all files whose SHA2 matches indicated file\n");
+                printf("Name of file is not listed and terminates with EXIT_SUCCESS if any matching files are found\n");
+                printf("EXIT_FAILIURE if no duplicates found\n");
+                break;
+            case 'h':
+                printf("Find and list relative pathnames of all files with the hash provided\n");
+                printf("terminates with EXIT_SUCCESS if any matching files are found\n");
+                printf("EXIT_FAILIURE if no duplicates found\n");
+                break;
+            case 'l':
+                printf("List all duplicate files found\n");
+                printf("Output consists of relative pathnames of two or more files that are duplicates of eachother\n");
+                printf("Pathnames of dup files must be seperated by TAB character\n");
+                break;
+            case 'm':
+                printf("minimise total bytes required to store all files' data by moddifying directory structure\n");
+                break;
+            case 'q':
+                printf("No output. \nExit success if no duplciates. or exit failure otherwise\n");
+                break;
+            default:
+                printf("we here\n");
+                break;
+        }
+
+    }
+
+    for (; optind < argc; optind++) {
+        strcpy(path, argv[optind]);
+        printf("Extras: %s\n", argv[optind]);
+        printf("Path: %s\n", path);
+    }
+
+    if (argc == 1) {
+        printf("HERE argc == 1\n");
+        printf("argc is 1 -- no options or foldder name given\n");
+        strcpy(path, ".");
+        getStats(path);
+    } else {
+        printf("HERE argc != 1\n");
+        printf("path: %s\n", path);
+
+        getStats(path);
+    }
+
+    printf("HERE NOW\n");
 
     exit(EXIT_SUCCESS);
 }
