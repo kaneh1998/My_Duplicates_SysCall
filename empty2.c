@@ -68,6 +68,30 @@ void getStats(char path[]) {
         int isDirectoryTF = isDirectory(dirp->d_name); // 1 = Directory && 0 = Not Directory
         printf("is directory? \t%i\n", isDirectoryTF);
 
+        printf("IS DIRECT? : %u\n", dirp->d_type); // Checks if directory
+        if (dirp->d_type == 4) {
+            if ((strcmp(dirp->d_name, ".") != 0) && (strcmp(dirp->d_name, "..") != 0)) {
+                printf("DIRECTORY HIT\n");
+                printf("Next path: %s/%s\n", path, dirp->d_name);
+                printf("Ghe\n");
+                /*char newPath[8] = "";
+                printf("Ghed\n");
+                strcat(newPath, path);
+                printf("Ghefd\n");
+                strcat(newPath, "/");
+                strcat(newPath, dirp->d_name);
+                printf("new path: %s\n", newPath);
+                */
+                printf("Going to check the %s\n", dirp->d_name);
+                getStats(dirp->d_name);
+                printf("Back in here\n");
+                printf("Going to check %s\n", path);
+                getStats(path);
+            }
+        } else {
+            printf("FILE\n");
+        }
+
         if (isDirectoryTF == 1) {
             hash.isDirect[i] = 1;
         } else {
@@ -82,7 +106,6 @@ void getStats(char path[]) {
         totalBytes += buffer.st_size;
         hash.fileSize[i] = buffer.st_size;
         hash.totalFileSize += buffer.st_size;
-
 
         hash.hashString[i] = strSHA2(dirp->d_name);
 
