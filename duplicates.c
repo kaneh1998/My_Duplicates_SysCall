@@ -2,6 +2,8 @@
 //  Name(s):             Kane Howard
 //  Student number(s):   22253494
 
+// Process command line options and usage() function
+
 
 #include <stdio.h>
 #include <stdlib.h>

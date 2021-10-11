@@ -3,7 +3,7 @@
 
 PROJECT = duplicates
 HEADERS = $(PROJECT).h
-OBJ = duplicates.o empty1.o empty2.o strSHA2.o
+OBJ = duplicates.o empty1.o findthings.o strSHA2.o
 
 C11 = cc -std=c11
 CFLAGS = -Wall -Werror
