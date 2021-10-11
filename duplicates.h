@@ -16,6 +16,12 @@ typedef struct { // Must dynamiccaly locate memory here
 
 } HASH_LIST;
 
+typedef struct {
+
+    char *pathName[5000];
+    
+} PATH_LIST;
+
 // DEFINE GLOBAL FUNCTIONS
 
 extern void getStatistics(HASH_LIST);
@@ -38,5 +44,7 @@ extern	char *strSHA2(char *);
 // extern void      correlation(int); // note parameters are not named in header files
 
 // DECLARE GLOBAL VARIABLES
+
+extern int DUPLICATE_SIZE;
 
 // extern double    projmarks[]; // note array size not provided in header
