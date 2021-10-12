@@ -26,6 +26,7 @@
 int main(int argc, char *argv[]) {
 
     char path[2000];
+    HASH_LIST hash;
 
     int opt;
 
@@ -80,15 +81,20 @@ int main(int argc, char *argv[]) {
         printf("HERE argc == 1\n");
         printf("argc is 1 -- no options or foldder name given\n");
         strcpy(path, ".");
-        getStats(path);
+        findFilesRecursive(path, &hash);
     } else {
         printf("HERE argc != 1\n");
         printf("path: %s\n", path);
 
-        getStats(path);
+        findFilesRecursive(path, &hash);
     }
 
-    printf("HERE NOW\n");
 
+    printf("Checking duplicates now\n");
+    checkHash(&hash);
+
+    getStatistics(&hash);
+
+    printf("END OF FUNCTION SUCCESS\n");
     exit(EXIT_SUCCESS);
 }

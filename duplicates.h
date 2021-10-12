@@ -24,11 +24,11 @@ typedef struct {
 
 // DEFINE GLOBAL FUNCTIONS
 
-extern void getStatistics(HASH_LIST);
+extern void getStatistics(HASH_LIST *);
 
-extern int checkHash(HASH_LIST);
+extern int checkHash(HASH_LIST *);
 
-extern void getStats(char[]);
+extern void findFilesRecursive(char[], HASH_LIST *);
 
 extern int isDirectory(const char *);
 
