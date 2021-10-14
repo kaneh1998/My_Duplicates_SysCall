@@ -13,8 +13,6 @@
 
 #include "duplicates.h"
 
-int globalCounter = 0;
-
 void findFilesRecursive(char *basePath, HASH_LIST *hash, char **testArray)
 {
     char path[10000];
@@ -29,6 +27,9 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash, char **testArray)
 
     while ((dp = readdir(dir)) != NULL)
     {
+        printf("PATH: %s\n", path);
+        printf("BASEPATH: %s\n", basePath);
+        printf("\nFILE NAME: \t%s\n", dp->d_name);
 
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_name[0] != '.' && hash->aFlag == false) {
         // Skips hidden folders with '.'
@@ -40,10 +41,10 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash, char **testArray)
             if (dp->d_type != 4) {
 
                 printf("\nFILE NAME: \t%s\n", dp->d_name);
-                hash->fileName[globalCounter] = dp->d_name;
-                testArray[globalCounter] = dp->d_name;
-                hash->hashString[globalCounter] = strSHA2(path);
-                printf("HASH: \t\t%s\n", hash->hashString[globalCounter]);
+                hash->fileName[hash->totalFiles] = dp->d_name;
+                testArray[hash->totalFiles] = dp->d_name;
+                hash->hashString[hash->totalFiles] = strSHA2(path);
+                printf("HASH: \t\t%s\n", hash->hashString[hash->totalFiles]);
 
                 printf("PATH: \t\t%s\n", path);
 
@@ -54,20 +55,28 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash, char **testArray)
                     exit(EXIT_FAILURE);
                 }
 
-                printf("Size: %lli\n", buffer.st_size);
-                hash->fileSize[globalCounter] = buffer.st_size;
+                printf("Size: %li\n", buffer.st_size);
+                hash->fileSize[hash->totalFiles] = buffer.st_size;
                 hash->totalFileSize += buffer.st_size;
                 hash->totalFiles += 1;
                 printf("Files found so far: %i\n", hash->totalFiles);
-                printf("File 1 name: %s\n", hash->fileName[1]);
+                printf("File 1 name: %s\n", hash->fileName[0]);
 
             }
 
-            if (hash->fileName[globalCounter] != NULL) { // NULL when directory is encountered 
-                printf("File name from hash table: %s\n\n", hash->fileName[globalCounter]);
+            if (hash->fileName[hash->totalFiles] != NULL) { // NULL when directory is encountered 
+                printf("File name from hash table: %s\n\n", hash->fileName[hash->totalFiles]);
             }
 
-            globalCounter++;
+            /*for (int i = 0; i < hash->totalFiles; i++) {
+                for (int j = 0; j < hash->totalFiles; j++) {
+                    printf("%i\n", j);
+                    if (strcmp(hash->hashString[i], hash->hashString[j]) == 0 && i != j) {
+                        printf("FOUND DUPLICATE");
+                        printf("file: %s    vs file: %s\n", hash->fileName[i], hash->fileName[j]);
+                    }
+                }
+            }*/
 
             printf("\nRecursive now up again\n");
 

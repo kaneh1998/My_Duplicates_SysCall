@@ -22,21 +22,6 @@ typedef struct { // Must dynamiccaly locate memory here
 
 } HASH_LIST;
 
-typedef struct {
-
-    char *pathName[5000];
-    
-} PATH_LIST;
-
-typedef struct {
-    bool aFlag;
-    bool fFlag;
-    bool hFlag;
-    bool lFlag;
-    bool mFlag;
-    bool qFlag;
-} FLAG_LIST;
-
 // DEFINE GLOBAL FUNCTIONS
 
 extern void getStatistics(HASH_LIST *);
@@ -44,8 +29,6 @@ extern void getStatistics(HASH_LIST *);
 extern int checkHash(HASH_LIST *);
 
 extern void findFilesRecursive(char[], HASH_LIST *, char **);
-
-extern int isDirectory(const char *);
 
 extern	char *strSHA2(char *);
 

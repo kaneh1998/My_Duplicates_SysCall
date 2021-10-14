@@ -30,7 +30,7 @@ int checkHash(HASH_LIST *hash) {
     printf("\n%i\n", hash->fFlag);
     //*hash.duplicateSize = 0;
     //printf("In function\n");
-    //printf("%i\n", hash.totalFiles);
+    printf("total files: %i\n", hash->totalFiles);
 
     for (int i = 0; i < hash->totalFiles; i++) {
         //printf("In loop\n");

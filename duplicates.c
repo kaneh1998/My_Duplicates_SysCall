@@ -22,6 +22,7 @@
 
 #define OPTLIST "aAfhlmq:"
 
+HASH_LIST hash;
 
 int main(int argc, char *argv[]) {
 
@@ -29,9 +30,7 @@ int main(int argc, char *argv[]) {
     char *testNames[5000];
 
     char path[50000];
-    HASH_LIST hash;
-    HASH_LIST *ptrHash;
-    ptrHash = &hash;
+    HASH_LIST *ptrHash = &hash;
     ptrHash->totalFiles = 0; // These values stick
     ptrHash->fFlag = true; // These values stick
 
@@ -104,11 +103,10 @@ int main(int argc, char *argv[]) {
 
 
     printf("Checking duplicates now\n");
-    int duplicates = 0;
     printf("file 0: %s\n", hash.fileName[0]);
     printf("file 0: %s\n", testNames[0]);
 
-    duplicates = checkHash(ptrHash);
+    checkHash(ptrHash);
 
     getStatistics(ptrHash);
 
