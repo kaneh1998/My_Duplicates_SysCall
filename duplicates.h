@@ -5,14 +5,20 @@
 
 typedef struct { // Must dynamiccaly locate memory here
 
-    char *hashString[5000]; // Hash of file
-    char *fileName[5000];   // File name
-    int fileSize[5000];     // File size
+    char *hashString[50000]; // Hash of file
+    char *fileName[50000];   // File name
+    int fileSize[50000];     // File size
     int totalFileSize;      // File size after all files counted
     int totalFiles;         // Total number of files
-    int isDirect[5000];     // Is a directory (bool)
+    int isDirect[50000];     // Is a directory (bool)
     int duplicateSize;      // Size of all duplicates
     int totalDuplicates;    // Total number of duplicates found
+    bool aFlag;
+    bool fFlag;
+    bool hFlag;
+    bool lFlag;
+    bool mFlag;
+    bool qFlag;
 
 } HASH_LIST;
 
@@ -22,13 +28,22 @@ typedef struct {
     
 } PATH_LIST;
 
+typedef struct {
+    bool aFlag;
+    bool fFlag;
+    bool hFlag;
+    bool lFlag;
+    bool mFlag;
+    bool qFlag;
+} FLAG_LIST;
+
 // DEFINE GLOBAL FUNCTIONS
 
 extern void getStatistics(HASH_LIST *);
 
 extern int checkHash(HASH_LIST *);
 
-extern void findFilesRecursive(char[], HASH_LIST *);
+extern void findFilesRecursive(char[], HASH_LIST *, char **);
 
 extern int isDirectory(const char *);
 

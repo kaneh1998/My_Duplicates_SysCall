@@ -25,8 +25,20 @@
 
 int main(int argc, char *argv[]) {
 
-    char path[2000];
+    // TEST
+    char *testNames[5000];
+
+    char path[50000];
     HASH_LIST hash;
+    HASH_LIST *ptrHash;
+    ptrHash = &hash;
+    ptrHash->totalFiles = 0; // These values stick
+    ptrHash->fFlag = true; // These values stick
+
+    int a = 0;
+    int *ptra;
+    ptra = &a;
+    printf("%i\n", *ptra);
 
     int opt;
 
@@ -38,6 +50,7 @@ int main(int argc, char *argv[]) {
         switch (opt) {
             case 'a':
                 printf("Consider all hidden & default '.' files in count \n");
+                ptrHash->aFlag = true;
                 break;
             case 'A':
                 printf("Advanced option \n");
@@ -81,19 +94,23 @@ int main(int argc, char *argv[]) {
         printf("HERE argc == 1\n");
         printf("argc is 1 -- no options or foldder name given\n");
         strcpy(path, ".");
-        findFilesRecursive(path, &hash);
+        findFilesRecursive(path, ptrHash, testNames);
     } else {
         printf("HERE argc != 1\n");
         printf("path: %s\n", path);
 
-        findFilesRecursive(path, &hash);
+        findFilesRecursive(path, ptrHash, testNames);
     }
 
 
     printf("Checking duplicates now\n");
-    checkHash(&hash);
+    int duplicates = 0;
+    printf("file 0: %s\n", hash.fileName[0]);
+    printf("file 0: %s\n", testNames[0]);
 
-    getStatistics(&hash);
+    duplicates = checkHash(ptrHash);
+
+    getStatistics(ptrHash);
 
     printf("END OF FUNCTION SUCCESS\n");
     exit(EXIT_SUCCESS);

@@ -15,9 +15,9 @@
 
 int globalCounter = 0;
 
-void findFilesRecursive(char *basePath, HASH_LIST *hash)
+void findFilesRecursive(char *basePath, HASH_LIST *hash, char **testArray)
 {
-    char path[1000];
+    char path[10000];
     struct dirent *dp;
     DIR *dir = opendir(basePath);
     struct stat buffer;
@@ -30,8 +30,8 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash)
     while ((dp = readdir(dir)) != NULL)
     {
 
-        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_name[0] != '.') // Skips hidden folders with '.'
-        {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_name[0] != '.' && hash->aFlag == false) {
+        // Skips hidden folders with '.'
 
             strcpy(path, basePath);
             strcat(path, "/");
@@ -39,12 +39,13 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash)
 
             if (dp->d_type != 4) {
 
-                printf("\n%s\n", dp->d_name);
+                printf("\nFILE NAME: \t%s\n", dp->d_name);
                 hash->fileName[globalCounter] = dp->d_name;
+                testArray[globalCounter] = dp->d_name;
                 hash->hashString[globalCounter] = strSHA2(path);
-                printf("HASH: %s\n", hash->hashString[globalCounter]);
+                printf("HASH: \t\t%s\n", hash->hashString[globalCounter]);
 
-                //printf("PATH: %s\n", path);
+                printf("PATH: \t\t%s\n", path);
 
                 int status = stat(path, &buffer);
 
@@ -53,12 +54,12 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash)
                     exit(EXIT_FAILURE);
                 }
 
-                printf("Size: %li\n", buffer.st_size);
+                printf("Size: %lli\n", buffer.st_size);
                 hash->fileSize[globalCounter] = buffer.st_size;
                 hash->totalFileSize += buffer.st_size;
                 hash->totalFiles += 1;
                 printf("Files found so far: %i\n", hash->totalFiles);
-                printf("File 0 name: %s\n", hash->fileName[6]);
+                printf("File 1 name: %s\n", hash->fileName[1]);
 
             }
 
@@ -68,7 +69,9 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash)
 
             globalCounter++;
 
-            findFilesRecursive(path, hash);
+            printf("\nRecursive now up again\n");
+
+            findFilesRecursive(path, hash, testArray);
         }
     }
 
