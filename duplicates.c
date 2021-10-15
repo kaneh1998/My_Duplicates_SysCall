@@ -26,18 +26,12 @@ HASH_LIST hash;
 
 int main(int argc, char *argv[]) {
 
-    // TEST
-    char *testNames[5000];
+    time_t start, stop;
+    start = time(NULL);
 
     char path[50000];
     HASH_LIST *ptrHash = &hash;
     ptrHash->totalFiles = 0; // These values stick
-    ptrHash->fFlag = true; // These values stick
-
-    int a = 0;
-    int *ptra;
-    ptra = &a;
-    printf("%i\n", *ptra);
 
     int opt;
 
@@ -93,23 +87,26 @@ int main(int argc, char *argv[]) {
         printf("HERE argc == 1\n");
         printf("argc is 1 -- no options or foldder name given\n");
         strcpy(path, ".");
-        findFilesRecursive(path, ptrHash, testNames);
+        findFilesRecursive(path, ptrHash);
     } else {
         printf("HERE argc != 1\n");
         printf("path: %s\n", path);
 
-        findFilesRecursive(path, ptrHash, testNames);
+        findFilesRecursive(path, ptrHash);
     }
 
 
     printf("Checking duplicates now\n");
     printf("file 0: %s\n", hash.fileName[0]);
-    printf("file 0: %s\n", testNames[0]);
 
     checkHash(ptrHash);
 
     getStatistics(ptrHash);
 
     printf("END OF FUNCTION SUCCESS\n");
+
+    stop = time(NULL);
+    printf("Timer: %li\n", stop - start);
+
     exit(EXIT_SUCCESS);
 }

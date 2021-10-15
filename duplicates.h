@@ -28,7 +28,7 @@ extern void getStatistics(HASH_LIST *);
 
 extern int checkHash(HASH_LIST *);
 
-extern void findFilesRecursive(char[], HASH_LIST *, char **);
+extern void findFilesRecursive(char[], HASH_LIST *);
 
 extern	char *strSHA2(char *);
 
@@ -42,7 +42,5 @@ extern	char *strSHA2(char *);
 // extern void      correlation(int); // note parameters are not named in header files
 
 // DECLARE GLOBAL VARIABLES
-
-extern int DUPLICATE_SIZE;
 
 // extern double    projmarks[]; // note array size not provided in header

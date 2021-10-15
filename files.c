@@ -11,8 +11,6 @@
 
 #include "duplicates.h"
 
-int DUPLICATE_SIZE;
-
 /*
  * Checks the hash of the given file
  * and also will check for duplicates
@@ -22,19 +20,19 @@ int DUPLICATE_SIZE;
  */
 
 int checkHash(HASH_LIST *hash) {
+
     printf("\nGot into check hash\n");
+
     int duplicates = 0;
-    //printf("\nGot into check hash\n");
+    hash->duplicateSize = 0;
+
     hash->totalDuplicates = 0;
-    printf("\n%i\n", hash->aFlag);
-    printf("\n%i\n", hash->fFlag);
-    //*hash.duplicateSize = 0;
-    //printf("In function\n");
+
     printf("total files: %i\n", hash->totalFiles);
 
     for (int i = 0; i < hash->totalFiles; i++) {
-        //printf("In loop\n");
-        for (int j = 0; j < hash->totalFiles; j++) {
+
+        for (int j = i + 1; j < hash->totalFiles; j++) {
             //printf("CHECKING .. %s   VS   %s\n", hash->hashString[i], hash->hashString[j]);
             //printf("CHECKING .. %i   VS   %i\n", i, j);
             if (strcmp(hash->hashString[i], hash->hashString[j]) == 0) {
@@ -48,10 +46,11 @@ int checkHash(HASH_LIST *hash) {
                     printf("Duplicate file found\n");
                     printf("NAME 1: %s  VS NAME 2: %s\n", hash->fileName[i], hash->fileName[j]);
                     printf("SIZE 1: %d  VS SIZE 2: %d\n", hash->fileSize[i], hash->fileSize[j]);
-                    DUPLICATE_SIZE += hash->fileSize[j];
-                    printf("Dup size: %i MBs\n", DUPLICATE_SIZE/1000000);
-                    //*hash.duplicateSize = totalDupSize;
-                    //printf("%d\n", *hash.duplicateSize);
+
+                    hash->totalDuplicates++;
+
+                    hash->duplicateSize += hash->fileSize[i];
+
                     duplicates++;
                 }
             }
@@ -60,18 +59,16 @@ int checkHash(HASH_LIST *hash) {
 
     printf("End of duplicates function\n");
 
-    printf("TOTAL BYTES DUP: %i\n", DUPLICATE_SIZE);
-
     return duplicates;
 }
 
 void getStatistics(HASH_LIST *hash){
 
-    printf("Duplciate size: %i\n", DUPLICATE_SIZE);
+    printf("Duplciate size: %i\n", hash->duplicateSize);
     
     printf("\nNumber of files: \t%i\n", hash->totalFiles);
     printf("Total Bytes: \t\t%i Bytes\n", hash->totalFileSize);
     printf("Total unique files: \t%i\n", hash->totalFiles - hash->totalDuplicates);
-    printf("Minimum total size: \t%i Bytes\n", hash->totalFileSize - DUPLICATE_SIZE);
+    printf("Minimum total size: \t%i Bytes\n", hash->totalFileSize - hash->duplicateSize);
 
 }
