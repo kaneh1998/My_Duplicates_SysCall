@@ -1,18 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+
+#if defined(__linux__)
+extern char *strdup(char *string);
+#endif
+
+// DECLARE GLOBAL PREPROCESSOR CONSTANTS
+
+#define MAX_MEM      100000
 
 // DEFINE GLOBAL DATA TYPES
 
 typedef struct { // Must dynamiccaly locate memory here
 
-    char *hashString[50000]; // Hash of file
-    char *fileName[50000];   // File name
-    int fileSize[50000];     // File size
-    int totalFileSize;      // File size after all files counted
-    int totalFiles;         // Total number of files
-    int isDirect[50000];     // Is a directory (bool)
-    int duplicateSize;      // Size of all duplicates
-    int totalDuplicates;    // Total number of duplicates found
+    char *hashString[MAX_MEM]; // Hash of file
+    char *fileName[MAX_MEM];   // File name
+    char *wantedHash[MAX_MEM]; // Wanted file hash
+    char *wantedFile[MAX_MEM]; // Wanted file name/path
+    char *alreadySeen[MAX_MEM]; // Already seen hashes
+    uint64_t fileSize[MAX_MEM];     // File size
+    uint64_t totalFileSize;       // File size after all files counted
+    uint64_t totalFiles;          // Total number of files
+    uint64_t duplicateSize;       // Size of all duplicates
+    uint64_t totalDuplicates;     // Total number of duplicates found
     bool aFlag;
     bool fFlag;
     bool hFlag;
@@ -26,15 +37,11 @@ typedef struct { // Must dynamiccaly locate memory here
 
 extern void getStatistics(HASH_LIST *);
 
-extern int checkHash(HASH_LIST *);
+extern void findDuplicateFiles(HASH_LIST *);
 
 extern void findFilesRecursive(char[], HASH_LIST *);
 
 extern	char *strSHA2(char *);
-
-// DECLARE GLOBAL PREPROCESSOR CONSTANTS
-
-// #define MAX      200
 
 // DECLARE GLOBAL FUNCTIONS
 

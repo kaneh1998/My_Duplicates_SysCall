@@ -20,58 +20,88 @@
 
 #include "duplicates.h"
 
-#define OPTLIST "aAfhlmq:"
+#define OPTLIST "aAf:h:lmq"
 
 HASH_LIST hash;
 
+void usage(char *progName) {
+
+    fprintf(stderr, "Usage: %s [options] dirname\n", progName);
+
+    fprintf(stderr, "where options are:\n\n");
+
+    fprintf(stderr, "-a\t\tcheck all files, including hidden\n");
+
+    fprintf(stderr, "-A\t\ttest advanced version\n");
+
+    fprintf(stderr, "-f\t\tcheck for a given filename\n");
+
+    fprintf(stderr, "-h\t\tcheck for a given hash\n");
+
+    fprintf(stderr, "-l\t\tlists all duplicate filenames\n");
+
+    fprintf(stderr, "-q\t\tquietly check files, exiting with no output\n");
+
+    exit(EXIT_FAILURE);
+
+}
+
 int main(int argc, char *argv[]) {
 
-    time_t start, stop;
-    start = time(NULL);
+    char *progName = "duplicates";
 
     char path[50000];
     HASH_LIST *ptrHash = &hash;
-    ptrHash->totalFiles = 0; // These values stick
 
     int opt;
 
     /*
-     * Sorts through optional flags
-     * to determine what to output
+     * Sorts through option flags
+     * to determine what to do
      */
     while ((opt = getopt(argc, argv, OPTLIST)) != -1) {
         switch (opt) {
             case 'a':
-                printf("Consider all hidden & default '.' files in count \n");
                 ptrHash->aFlag = true;
                 break;
             case 'A':
-                printf("Advanced option \n");
+                exit(EXIT_FAILURE);
                 break;
             case 'f':
-                printf("Check if file has duplicates\n");
-                printf("Lists relative pathnames of all files whose SHA2 matches indicated file\n");
-                printf("Name of file is not listed and terminates with EXIT_SUCCESS if any matching files are found\n");
-                printf("EXIT_FAILIURE if no duplicates found\n");
+                ptrHash->fFlag = true;
+                ptrHash->wantedHash[0] = strSHA2(optarg);
+
+                if (*ptrHash->wantedHash == NULL) {
+                    fprintf(stderr, "Illegal file given\n");
+                    exit(EXIT_FAILURE);
+                }
+
+                // Check the argument following the option
+                printf("%s\n", optarg);
+                printf("Hash: %s\n", *ptrHash->wantedHash);
+                printf("Argc: %i\n", argc);
                 break;
             case 'h':
-                printf("Find and list relative pathnames of all files with the hash provided\n");
-                printf("terminates with EXIT_SUCCESS if any matching files are found\n");
-                printf("EXIT_FAILIURE if no duplicates found\n");
+                ptrHash->hFlag = true;
+                ptrHash->wantedHash[0] = optarg;
+
+                // Check the argument following the option
+                printf("%s\n", optarg);
+                printf("Hash: %s\n", *ptrHash->wantedHash);
+                printf("Argc: %i\n", argc);
                 break;
             case 'l':
-                printf("List all duplicate files found\n");
-                printf("Output consists of relative pathnames of two or more files that are duplicates of eachother\n");
-                printf("Pathnames of dup files must be seperated by TAB character\n");
+                ptrHash->lFlag = true;
                 break;
             case 'm':
-                printf("minimise total bytes required to store all files' data by moddifying directory structure\n");
+                ptrHash->mFlag = true;
                 break;
             case 'q':
-                printf("No output. \nExit success if no duplciates. or exit failure otherwise\n");
+                ptrHash->qFlag = true;
                 break;
             default:
-                printf("we here\n");
+                fprintf(stderr, "%s : illegal option -%c\n", progName, optopt);
+                argc = -1;
                 break;
         }
 
@@ -79,34 +109,32 @@ int main(int argc, char *argv[]) {
 
     for (; optind < argc; optind++) {
         strcpy(path, argv[optind]);
-        printf("Extras: %s\n", argv[optind]);
-        printf("Path: %s\n", path);
+        //printf("Extra arguments: %s\n", argv[optind]);
+        //printf("Path: %s\n", path);
+        //printf("Argc: %i\n", argc);
     }
 
-    if (argc == 1) {
+    if (argc == 1) { // If no directory is provided and no options selected
         printf("HERE argc == 1\n");
         printf("argc is 1 -- no options or foldder name given\n");
         strcpy(path, ".");
         findFilesRecursive(path, ptrHash);
+    } else if (argc == -1) {
+        usage(progName);
     } else {
-        printf("HERE argc != 1\n");
-        printf("path: %s\n", path);
-
-        findFilesRecursive(path, ptrHash);
+        //printf("HERE argc != 1\n");
+        //printf("path: %s\n", path);
+        if (access(path, R_OK) == 0) { // Check we can read the directory
+            findFilesRecursive(path, ptrHash);
+        } else {
+            fprintf(stderr, "path %s does not exist\n", path);
+            exit(EXIT_FAILURE);
+        }
     }
 
-
-    printf("Checking duplicates now\n");
-    printf("file 0: %s\n", hash.fileName[0]);
-
-    checkHash(ptrHash);
+    findDuplicateFiles(ptrHash);
 
     getStatistics(ptrHash);
-
-    printf("END OF FUNCTION SUCCESS\n");
-
-    stop = time(NULL);
-    printf("Timer: %li\n", stop - start);
 
     exit(EXIT_SUCCESS);
 }
