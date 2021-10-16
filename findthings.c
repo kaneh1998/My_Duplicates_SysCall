@@ -13,7 +13,7 @@
 
 #include "duplicates.h"
 
-void findFilesRecursive(char *basePath, HASH_LIST *hash)
+void findFilesRecursive(char *basePath, FILE_LIST *hash)
 {
     char path[10000];
     struct dirent *dp;
@@ -24,11 +24,9 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash)
         return;
     }
 
-    while ((dp = readdir(dir)) != NULL) // TODO: Add support for the -a
+    while ((dp = readdir(dir)) != NULL)
     {
-        //printf("File No: %li\n", hash->totalFiles);
-        //printf("BASEPATH: %s\n", basePath);
-        //printf("\nFILE NAME: \t%s\n", dp->d_name);
+
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0 && dp->d_name[0] != '.' && hash->aFlag == false) {
         // DOES NOT pass files when:
         // -    File name is "." OR ".." OR ".xxxx" OR "aFlag = False" 
@@ -37,25 +35,20 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash)
             strcat(path, "/");
             strcat(path, dp->d_name); // Building new path for recursive finding of files + directories
 
-            if (dp->d_type != 4) { // Not a directory
+            if (dp->d_type != 4) { // Check if file is a directory - prevents running stat() on directories
 
                 int status = stat(path, &buffer); //To find size of file
                 if (status != 0) {
                     perror("ERROR: ");
                 }
 
-                hash->fileName[hash->totalFiles] = strdup(path); // Add path as name
+                hash->fileName[hash->totalFiles] = strdup(path);
+                CHECK_ALLOC(hash->fileName[hash->totalFiles]);
                 hash->hashString[hash->totalFiles] = strSHA2(path);
                 hash->fileSize[hash->totalFiles] = buffer.st_size;
                 hash->totalFileSize += buffer.st_size;
 
-                //printf("\nFILE NAME: \t%s\n", dp->d_name);
-                //printf("HASH: \t\t%s\n", hash->hashString[hash->totalFiles]);
-                //printf("PATH: \t\t%s\n", path);
-                //printf("Size: %li\n", buffer.st_size);
-
                 hash->totalFiles++;
-                //printf("Files found so far: %i\n", hash->totalFiles);
 
             }
 
@@ -67,25 +60,20 @@ void findFilesRecursive(char *basePath, HASH_LIST *hash)
             strcat(path, "/");
             strcat(path, dp->d_name);
 
-            if (dp->d_type != 4) { // Not a directory
+            if (dp->d_type != 4) {
 
-                int status = stat(path, &buffer); //To find size of file
+                int status = stat(path, &buffer);
                 if (status != 0) {
                     perror("ERROR: ");
                 }
 
-                hash->fileName[hash->totalFiles] = strdup(path); // Add path as name // Add a CHECKALLOC after this
+                hash->fileName[hash->totalFiles] = strdup(path);
+                CHECK_ALLOC(hash->fileName[hash->totalFiles]);
                 hash->hashString[hash->totalFiles] = strSHA2(path);
                 hash->fileSize[hash->totalFiles] = buffer.st_size;
                 hash->totalFileSize += buffer.st_size;
 
-                //printf("\nFILE NAME: \t%s\n", dp->d_name);
-                //printf("HASH: \t\t%s\n", hash->hashString[hash->totalFiles]);
-                //printf("PATH: \t\t%s\n", path);
-                //printf("Size: %liMBs\n", buffer.st_size/1000000);
-
                 hash->totalFiles++;
-                //printf("Files found so far: %i\n", hash->totalFiles);
 
             }
 

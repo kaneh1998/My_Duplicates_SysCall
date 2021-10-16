@@ -22,7 +22,7 @@
 
 #define OPTLIST "aAf:h:lmq"
 
-HASH_LIST hash;
+FILE_LIST hash;
 
 void usage(char *progName) {
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     char *progName = "duplicates";
 
     char path[50000];
-    HASH_LIST *ptrHash = &hash;
+    FILE_LIST *ptrHash = &hash;
 
     int opt;
 
@@ -75,20 +75,10 @@ int main(int argc, char *argv[]) {
                     fprintf(stderr, "Illegal file given\n");
                     exit(EXIT_FAILURE);
                 }
-
-                // Check the argument following the option
-                printf("%s\n", optarg);
-                printf("Hash: %s\n", *ptrHash->wantedHash);
-                printf("Argc: %i\n", argc);
                 break;
             case 'h':
                 ptrHash->hFlag = true;
                 ptrHash->wantedHash[0] = optarg;
-
-                // Check the argument following the option
-                printf("%s\n", optarg);
-                printf("Hash: %s\n", *ptrHash->wantedHash);
-                printf("Argc: %i\n", argc);
                 break;
             case 'l':
                 ptrHash->lFlag = true;
@@ -109,21 +99,14 @@ int main(int argc, char *argv[]) {
 
     for (; optind < argc; optind++) {
         strcpy(path, argv[optind]);
-        //printf("Extra arguments: %s\n", argv[optind]);
-        //printf("Path: %s\n", path);
-        //printf("Argc: %i\n", argc);
     }
 
-    if (argc == 1) { // If no directory is provided and no options selected
-        printf("HERE argc == 1\n");
-        printf("argc is 1 -- no options or foldder name given\n");
+    if (argc == 1) { // If no directory is provided and no options selected - Just check the current directory
         strcpy(path, ".");
         findFilesRecursive(path, ptrHash);
     } else if (argc == -1) {
         usage(progName);
     } else {
-        //printf("HERE argc != 1\n");
-        //printf("path: %s\n", path);
         if (access(path, R_OK) == 0) { // Check we can read the directory
             findFilesRecursive(path, ptrHash);
         } else {

@@ -5,83 +5,92 @@
 
 #include "duplicates.h"
 
+/*
+ * Used to check if we have previously seen
+ * the given hash
+*/
+
 int findMoreDuplicates(char *checkingHash, char **seenHashArray, int loopNum) {
 
     int alreadyFound = 0;
 
     for (int i = 0; i < loopNum; i++) {
         if (strcmp(seenHashArray[i], checkingHash) == 0) {
+
             alreadyFound++;
-            //printf("returning >0\n");
             return alreadyFound;
+
         }
     }
-
-    //printf("returning 0\n");
 
     return 0;
 
 }
 
 /*
- * Checks the hash of the given file
+ * Checks the hash of all files
  * and also will check for duplicates
- * given that the file is not the same
- * and it is not checking the parent or
- * child directories together.
  */
 
-void findDuplicateFiles(HASH_LIST *hash) {
+void findDuplicateFiles(FILE_LIST *hash) {
 
-    char *tempHash[hash->totalFiles];
-    int tempHashIndex = 0;
-    bool seenFlag = 0;
+    char *tempHash[hash->totalFiles]; // Store already seen hashes
+    int tempHashIndex = 0;            // Number of unique hashes / files
+    bool seenFlag = 0;                // Used for checking if we have seen the hash already when checking a new file
 
     for (int i = 0; i < hash->totalFiles; i++) {
+
+        // Used for the -l option, prints new lines for unique duplicates
         if (seenFlag == 1) {
             printf("\n");
         }
         seenFlag = 0;
 
-        if (hash->hFlag == true || hash->fFlag == true) { // Checks for matching hash with -h or -f option
-            //printf("Checking hashes\n");
+        // Checks for matching hash with -h or -f option
+        if (hash->hFlag == true || hash->fFlag == true) {
+
             if (strcmp(hash->hashString[i], *hash->wantedHash) == 0) {
                 printf("%s\n", hash->fileName[i]);
                 hash->totalDuplicates++;
             }
         }
 
+        // Checks for unique hashes after the first hash has been checked
         if (i > 0) {
             if ((findMoreDuplicates(hash->hashString[i], tempHash, tempHashIndex)) != 0) {
                 continue;
             }
         }
 
-        if (hash->fFlag != true && hash->hFlag != true) { // Doesn't bother running this loop if we are just looking for a matching file or hash
+        // Doesn't bother running this loop if we are just looking for a matching file or hash
+        if (hash->fFlag != true && hash->hFlag != true) {
 
-        tempHash[tempHashIndex] = hash->hashString[i];
-        //printf("%s\n", tempHash[tempHashIndex]);
-        tempHashIndex++;
+            tempHash[tempHashIndex] = hash->hashString[i];
+            tempHashIndex++;
 
             for (int j = i + 1; j < hash->totalFiles; j++) {
 
                 if (strcmp(hash->hashString[i], hash->hashString[j]) == 0) {
+
+                    // Ignore files that are the same
                     if (i == j) {
                         continue;
-                    } else if ((strcmp(hash->fileName[i], ".") == 0) || (strcmp(hash->fileName[i], "..") == 0)) {
-                        continue;
-                    }  else { // Found a duplicate file
+                    } else { // Found a duplicate file
 
                         hash->totalDuplicates++;
-
                         hash->duplicateSize += hash->fileSize[i];
 
-                        if (hash->lFlag == true) { // Check for -l option -- If a duplicate has been found, loop once again through files to see if any more are contained and report back
+                        // Check for -l option
+                        if (hash->lFlag == true) {
                             if (seenFlag == 0) {
+
                                 printf("%s\t%s", hash->fileName[i], hash->fileName[j]);
                                 seenFlag = 1;
+
                             } else {
+
                                 printf("\t%s", hash->fileName[j]);
+
                             }
                         }
                     }
@@ -91,7 +100,12 @@ void findDuplicateFiles(HASH_LIST *hash) {
     }
 }
 
-void getStatistics(HASH_LIST *hash){
+/*
+ * Prints statistics about the files found
+ * depending on options the program is ran with
+*/
+
+void getStatistics(FILE_LIST *hash){
 
     if (hash->qFlag == true && hash->totalDuplicates != 0) { // Check for quiet option (-q)
         exit(EXIT_FAILURE);
@@ -100,17 +114,16 @@ void getStatistics(HASH_LIST *hash){
     }
 
     if ((hash->hFlag == true || hash->fFlag == true) && hash->totalDuplicates != 0) { // Check for matching hashes (with -h or -f option)
-        printf("Success\n");
         exit(EXIT_SUCCESS);
     } else if (hash->hFlag == true || hash->fFlag == true) {
         exit(EXIT_FAILURE);
     }
 
-    if (hash->lFlag == true) {                              // Check if -l option was used
+    if (hash->lFlag == true) {     // Check if -l option was used
         return;
     }
     
-    // If none of the above options are true -- Output the statistics
+    // If none of the above options apply -- Output the statistics
     printf("%li\n", hash->totalFiles);
     printf("%li\n", hash->totalFileSize);
     printf("%li\n", hash->totalFiles - hash->totalDuplicates);
