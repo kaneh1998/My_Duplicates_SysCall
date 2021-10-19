@@ -9,7 +9,7 @@ USAGE
 
 compile with: make -f Makefile
 
-run with: ./duplicates [option] [path]
+run with: ./duplicates [option] {option parameter} [path]
 
 
 OPTIONS
