@@ -39,7 +39,14 @@ void findFilesRecursive(char *basePath, FILE_LIST *hash)
 
                 int status = stat(path, &buffer); //To find size of file
                 if (status != 0) {
-                    perror("ERROR: ");
+                    continue;
+                }
+
+                // Check if number of hardlinks is >1 && if we have already seen the inode # before
+                if (buffer.st_nlink > 1) {
+                    if (checkInodeNum(hash, buffer.st_ino) == 1) {  // If we find matching inode - skip this file
+                        continue;
+                    }
                 }
 
                 hash->fileName[hash->totalFiles] = strdup(path);
@@ -47,6 +54,7 @@ void findFilesRecursive(char *basePath, FILE_LIST *hash)
                 hash->hashString[hash->totalFiles] = strSHA2(path);
                 hash->fileSize[hash->totalFiles] = buffer.st_size;
                 hash->totalFileSize += buffer.st_size;
+                hash->inodeNum[hash->totalFiles] = buffer.st_ino;
 
                 hash->totalFiles++;
 
@@ -64,7 +72,14 @@ void findFilesRecursive(char *basePath, FILE_LIST *hash)
 
                 int status = stat(path, &buffer);
                 if (status != 0) {
-                    perror("ERROR: ");
+                    continue;
+                }
+
+                // Check if number of hardlinks is >1 && if we have already seen the inode # before
+                if (buffer.st_nlink > 1) {
+                    if (checkInodeNum(hash, buffer.st_ino) == 1) {  // Loop through all inodes in the struct) {
+                        continue;
+                    }
                 }
 
                 hash->fileName[hash->totalFiles] = strdup(path);
@@ -72,6 +87,7 @@ void findFilesRecursive(char *basePath, FILE_LIST *hash)
                 hash->hashString[hash->totalFiles] = strSHA2(path);
                 hash->fileSize[hash->totalFiles] = buffer.st_size;
                 hash->totalFileSize += buffer.st_size;
+                hash->inodeNum[hash->totalFiles] = buffer.st_ino;
 
                 hash->totalFiles++;
 

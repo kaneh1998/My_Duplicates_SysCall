@@ -101,6 +101,25 @@ void findDuplicateFiles(FILE_LIST *hash) {
 }
 
 /*
+ *  Function to help check
+ *  inodes we have found so far
+ *  If the inode we are checking is found - we have found a hard-link
+ *  returns 1 -- otherwise 0
+ */
+
+int checkInodeNum(FILE_LIST *hash, int inodeToCheck) {
+
+    for (int i = 0; i < hash->totalFiles; i++) {
+        if (inodeToCheck == hash->inodeNum[i]) {
+            return 1;
+        }
+    }
+
+    return 0;
+
+}
+
+/*
  * Prints statistics about the files found
  * depending on options the program is ran with
 */
@@ -127,6 +146,6 @@ void getStatistics(FILE_LIST *hash){
     printf("%li\n", hash->totalFiles);
     printf("%li\n", hash->totalFileSize);
     printf("%li\n", hash->totalFiles - hash->totalDuplicates);
-    printf("%li", hash->totalFileSize - hash->duplicateSize);
+    printf("%li\n", hash->totalFileSize - hash->duplicateSize);
 
 }

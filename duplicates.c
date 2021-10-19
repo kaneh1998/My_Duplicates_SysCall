@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
                 ptrHash->aFlag = true;
                 break;
             case 'A':
-                exit(EXIT_FAILURE);
+                exit(EXIT_SUCCESS);
                 break;
             case 'f':
                 ptrHash->fFlag = true;

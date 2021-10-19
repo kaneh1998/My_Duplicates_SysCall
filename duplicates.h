@@ -21,6 +21,7 @@ typedef struct {
     char *wantedHash[NUM_FILES];      // Wanted file hash (with -h option)
     char *wantedFile[NUM_FILES];      // Wanted file name / path (with -f option)
     uint64_t fileSize[NUM_FILES];     // File size
+    uint64_t inodeNum[NUM_FILES];              // Record the inode num
     uint64_t totalFileSize;         // File size after all files counted
     uint64_t totalFiles;            // Total number of files
     uint64_t duplicateSize;         // Size of all duplicates
@@ -43,3 +44,5 @@ extern void findDuplicateFiles(FILE_LIST *);
 extern void findFilesRecursive(char[], FILE_LIST *);
 
 extern	char *strSHA2(char *);
+
+extern int checkInodeNum(FILE_LIST *, int);
