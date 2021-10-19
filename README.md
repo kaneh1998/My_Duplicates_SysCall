@@ -23,11 +23,13 @@ This option indicates if the program attempts the advanced version of the projec
       duplicates -A produces no output at all, simply terminating with EXIT_SUCCESS (for advanced) or with EXIT_FAILURE (for basic).
       
 **-f** _filename_
+
 find and list, one per line, the relative pathnames of all files whose SHA2 hash matches that of the indicated file. 
       The name of the indicated file is not listed.
       duplicates -f terminates with EXIT_SUCCESS if any matching files are found, or with EXIT_FAILURE otherwise.
 
 **-h**   _hash_
+
 find and list, one per line, the relative pathnames of all files with the indicated SHA2 hash.
       duplicates -h terminates with EXIT_SUCCESS if any matching files are found, or with EXIT_FAILURE otherwise.
 
