@@ -2,8 +2,14 @@
 //  Name(s):             Kane Howard
 //  Student number(s):   22253494
 
-// Process command line options and usage() function
+// Program SUPPORTS: multiple directories being provided + hard links
+// Program DOES NOT SUPPORT: -m option
 
+// Assumptions:
+// Was not sure how to handle when one or more directories provided are sub-directories of one provided directory
+// i.e ./duplicates . ./project
+// When directories + sub-directories like this are provided, all files are counted and checked for duplicates 
+// Files are doubled up, I guess you could say...
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -97,21 +103,39 @@ int main(int argc, char *argv[]) {
 
     }
 
+    char *allPaths[1000][1000];     // Holds directories given
+    int numberOfDirectories = 0;    // Number of directories given
+
     for (; optind < argc; optind++) {
+        numberOfDirectories++;
+        *allPaths[numberOfDirectories] = strdup(argv[optind]);
+        CHECK_ALLOC(*allPaths[numberOfDirectories]);
         strcpy(path, argv[optind]);
     }
 
-    if (argc == 1) { // If no directory is provided and no options selected - Just check the current directory
+    // If no directory is provided and no options selected - Just check the current directory
+    if (argc == 1) {
         strcpy(path, ".");
         findFilesRecursive(path, ptrHash);
+
+    // Error in option given
     } else if (argc == -1) {
         usage(progName);
+
     } else {
-        if (access(path, R_OK) == 0) { // Check we can read the directory
-            findFilesRecursive(path, ptrHash);
-        } else {
-            fprintf(stderr, "path %s does not exist\n", path);
-            exit(EXIT_FAILURE);
+
+        // Runs through all directories given
+        while (numberOfDirectories != 0) {
+
+            if (access(*allPaths[numberOfDirectories], R_OK) == 0) {
+                findFilesRecursive(*allPaths[numberOfDirectories], ptrHash);
+            } else {
+                fprintf(stderr, "path %s does not exist\n", path);
+                exit(EXIT_FAILURE);
+            }
+            
+            numberOfDirectories--;
+
         }
     }
 

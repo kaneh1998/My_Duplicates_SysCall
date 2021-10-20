@@ -143,9 +143,9 @@ void getStatistics(FILE_LIST *hash){
     }
     
     // If none of the above options apply -- Output the statistics
-    printf("%li\n", hash->totalFiles);
-    printf("%li\n", hash->totalFileSize);
-    printf("%li\n", hash->totalFiles - hash->totalDuplicates);
-    printf("%li\n", hash->totalFileSize - hash->duplicateSize);
+    printf("%llu\n", (unsigned long long)hash->totalFiles);
+    printf("%llu\n", (unsigned long long)hash->totalFileSize);
+    printf("%llu\n", (unsigned long long)hash->totalFiles - hash->totalDuplicates);
+    printf("%llu\n", (unsigned long long)hash->totalFileSize - hash->duplicateSize);
 
 }
